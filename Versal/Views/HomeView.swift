@@ -5,6 +5,7 @@ struct HomeView: View {
     @State private var showScanner = false
     @State private var showSettings = false
     @State private var haptics = HapticService()
+    @AppStorage("selectedTab") private var selectedTab = 0
 
     var body: some View {
         NavigationStack {
@@ -22,7 +23,15 @@ struct HomeView: View {
             .navigationBarHidden(true)
         }
         .fullScreenCover(isPresented: $showScanner) { ScannerView() }
-        .sheet(isPresented: $showSettings) { NavigationStack { SettingsView() } }
+        .sheet(isPresented: $showSettings) { SettingsView() }
+        .alert("Error", isPresented: .init(
+            get: { viewModel.errorMessage != nil },
+            set: { if !$0 { viewModel.errorMessage = nil } }
+        )) {
+            Button("OK") { viewModel.errorMessage = nil }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+        }
         .task { await viewModel.loadData() }
     }
 
@@ -64,9 +73,9 @@ struct HomeView: View {
                 .frame(maxWidth: .infinity)
 
             VStack(spacing: 10) {
-                quickActionTile(icon: "arrow.triangle.2.circlepath", label: "Convert", action: { viewModel.didTapConvert() })
-                quickActionTile(icon: "doc.on.doc", label: "Merge PDF", action: { viewModel.didTapConvert() })
-                quickActionTile(icon: "folder", label: "All Files", action: { viewModel.didTapAllFiles() })
+                quickActionTile(icon: "arrow.triangle.2.circlepath", label: "Convert", action: { viewModel.didTapConvert(); selectedTab = 2 })
+                quickActionTile(icon: "doc.on.doc", label: "Merge PDF", action: { viewModel.didTapConvert(); selectedTab = 2 })
+                quickActionTile(icon: "folder", label: "All Files", action: { viewModel.didTapAllFiles(); selectedTab = 1 })
             }
             .frame(width: UIScreen.main.bounds.width * 0.38)
         }

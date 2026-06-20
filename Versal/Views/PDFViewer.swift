@@ -30,6 +30,14 @@ struct PDFViewer: View {
         .sheet(isPresented: $viewModel.showPagesSheet) { pagesSheet }
         .sheet(isPresented: $viewModel.showAIChat) { aiChatSheet }
         .sheet(isPresented: $showPaywall) { PaywallView() }
+        .alert("Coming Soon", isPresented: .init(
+            get: { toastMessage != nil },
+            set: { if !$0 { toastMessage = nil } }
+        )) {
+            Button("OK") { toastMessage = nil }
+        } message: {
+            Text(toastMessage ?? "")
+        }
         .task { viewModel.loadPDF(at: fileURL) }
     }
 
@@ -37,17 +45,17 @@ struct PDFViewer: View {
     private var navToolbar: some ToolbarContent {
         ToolbarItem(placement: .navigationBarTrailing) {
             HStack(spacing: 12) {
-                Button(action: { haptics.trigger(.press) }) {
+                Button(action: { haptics.trigger(.press); toastMessage = "Share — coming in a future update" }) {
                     Image(systemName: "square.and.arrow.up")
                 }
                 .accessibilityLabel("Share PDF")
                 Menu {
-                    Button("Fill Forms", action: { haptics.trigger(.press) })
-                    Button("Rename", action: { haptics.trigger(.press) })
-                    Button("Duplicate", action: { haptics.trigger(.press) })
-                    Button("Document Info", action: { haptics.trigger(.press) })
+                    Button("Fill Forms", action: { haptics.trigger(.press); toastMessage = "Fill Forms — coming soon" })
+                    Button("Rename", action: { haptics.trigger(.press); toastMessage = "Rename — coming soon" })
+                    Button("Duplicate", action: { haptics.trigger(.press); toastMessage = "Duplicate — coming soon" })
+                    Button("Document Info", action: { haptics.trigger(.press); toastMessage = "Document Info — coming soon" })
                     Divider()
-                    Button("Delete", role: .destructive, action: { haptics.trigger(.destructive) })
+                    Button("Delete", role: .destructive, action: { haptics.trigger(.destructive); toastMessage = "Delete — coming soon" })
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
@@ -58,11 +66,12 @@ struct PDFViewer: View {
     }
 
     @State private var searchText = ""
+    @State private var toastMessage: String?
 
     private var utilityToolbar: some View {
         HStack(spacing: 16) {
             toolbarButton(icon: "magnifyingglass", label: "Search")
-                .onTapGesture { haptics.trigger(.press) }
+                .onTapGesture { haptics.trigger(.press); toastMessage = "Search — coming in a future update" }
             toolbarButton(icon: "lock", label: "Lock", isLocked: true)
                 .onTapGesture { haptics.trigger(.press); showPaywall = true }
 
@@ -95,13 +104,13 @@ struct PDFViewer: View {
             toolbarTab(icon: "signature", label: "Sign", isLocked: true)
                 .onTapGesture { haptics.trigger(.press); showPaywall = true }
             toolbarTab(icon: "pencil.tip.crop.circle", label: "Markup", isLocked: false)
-                .onTapGesture { haptics.trigger(.press) }
+                .onTapGesture { haptics.trigger(.press); toastMessage = "Markup — coming in a future update" }
             toolbarTab(icon: "eye.slash", label: "Redact", isLocked: true)
                 .onTapGesture { haptics.trigger(.press); showPaywall = true }
             toolbarTab(icon: "doc.on.doc", label: "Pages", isLocked: false)
                 .onTapGesture { haptics.trigger(.press); viewModel.showPagesSheet = true }
             toolbarTab(icon: "square.and.arrow.up", label: "Share", isLocked: false)
-                .onTapGesture { haptics.trigger(.press) }
+                .onTapGesture { haptics.trigger(.press); toastMessage = "Share — coming in a future update" }
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 6)
@@ -169,10 +178,10 @@ struct PDFViewer: View {
         NavigationStack {
             VStack(spacing: 0) {
                 HStack(spacing: 12) {
-                    Button("Add Page") { haptics.trigger(.press) }
+                    Button("Add Page") { haptics.trigger(.press); toastMessage = "Add Page — coming soon" }
                         .bodyBoldStyle()
                         .foregroundColor(.inkBlue)
-                    Button("Merge PDF") { haptics.trigger(.press) }
+                    Button("Merge PDF") { haptics.trigger(.press); toastMessage = "Merge PDF — coming soon" }
                         .bodyBoldStyle()
                         .foregroundColor(.inkBlue)
                     Spacer()
@@ -208,8 +217,8 @@ struct PDFViewer: View {
 
                 if !viewModel.selectedPages.isEmpty {
                     HStack(spacing: 20) {
-                        Button("Rotate") { haptics.trigger(.press) }
-                        Button("Extract") { haptics.trigger(.press) }
+                        Button("Rotate") { haptics.trigger(.press); toastMessage = "Rotate — coming soon" }
+                        Button("Extract") { haptics.trigger(.press); toastMessage = "Extract — coming soon" }
                         Button("Delete", role: .destructive) { haptics.trigger(.destructive); viewModel.deleteSelectedPages() }
                     }
                     .padding()

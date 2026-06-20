@@ -35,6 +35,7 @@ final class FilesViewModel: ObservableObject {
             files = try await fileService.listFiles()
             folders = try await fileService.getSmartFolders()
         } catch {
+            errorMessage = error.localizedDescription
             files = []
         }
         isLoading = false
@@ -48,6 +49,7 @@ final class FilesViewModel: ObservableObject {
         do {
             files = try await fileService.searchFiles(query: searchText)
         } catch {
+            errorMessage = error.localizedDescription
             files = []
         }
     }

@@ -48,6 +48,14 @@ struct FilesView: View {
             } message: {
                 Text(viewModel.errorMessage ?? "")
             }
+            .alert("Coming Soon", isPresented: .init(
+                get: { toastMessage != nil },
+                set: { if !$0 { toastMessage = nil } }
+            )) {
+                Button("OK") { toastMessage = nil }
+            } message: {
+                Text(toastMessage ?? "")
+            }
             .sheet(isPresented: .init(
                 get: { selectedFileURL != nil },
                 set: { if !$0 { selectedFileURL = nil } }
@@ -301,12 +309,16 @@ struct FilesView: View {
 
             Button {
                 haptics.trigger(.press)
+                toastMessage = "Share — coming in a future update"
             } label: {
                 Label("Share", systemImage: "square.and.arrow.up")
             }
             .tint(.inkBlue)
         }
     }
+    
+    @State private var showShareAlert = false
+    @State private var toastMessage: String?
 
     private var bottomActionBar: some View {
         HStack(spacing: 20) {
@@ -327,14 +339,8 @@ struct FilesView: View {
             haptics.trigger(.press)
             if isDestructive {
                 showDeleteConfirmation = true
-            } else if label == "Share" {
-                // Share selected files
-            } else if label == "Move" {
-                // Move to folder
-            } else if label == "Duplicate" {
-                // Duplicate files
-            } else if label == "Zip" {
-                // Archive files
+            } else {
+                toastMessage = "\(label) — coming in a future update"
             }
         }) {
             VStack(spacing: 4) {

@@ -21,6 +21,14 @@ struct ConvertView: View {
             .background(Color.backgroundGrouped)
             .navigationTitle("Convert")
         }
+        .alert("Conversion Error", isPresented: .init(
+            get: { viewModel.errorMessage != nil },
+            set: { if !$0 { viewModel.errorMessage = nil } }
+        )) {
+            Button("OK") { viewModel.errorMessage = nil }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+        }
     }
 
     private var browseStep: some View {

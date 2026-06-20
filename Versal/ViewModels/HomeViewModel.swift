@@ -5,6 +5,7 @@ final class HomeViewModel: ObservableObject {
     @Published var recentFiles: [FileItem] = []
     @Published var activityLog: [ActivityEvent] = []
     @Published var greeting: String = ""
+    @Published var errorMessage: String?
 
     private let fileService: FileServiceProtocol
     private let hapticService: HapticServiceProtocol
@@ -24,6 +25,7 @@ final class HomeViewModel: ObservableObject {
             recentFiles = Array(files.prefix(3))
             activityLog = generateMockActivity(from: files)
         } catch {
+            errorMessage = error.localizedDescription
             activityLog = []
         }
     }

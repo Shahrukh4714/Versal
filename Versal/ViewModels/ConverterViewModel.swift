@@ -10,6 +10,7 @@ final class ConverterViewModel: ObservableObject {
     @Published var conversionProgress: Double = 0
     @Published var isConverting: Bool = false
     @Published var convertedFile: FileItem?
+    @Published var errorMessage: String?
 
     enum Step {
         case browse
@@ -53,6 +54,7 @@ final class ConverterViewModel: ObservableObject {
                 convertedFile = result
                 step = .complete
             } catch {
+                errorMessage = error.localizedDescription
                 step = .browse
             }
             isConverting = false

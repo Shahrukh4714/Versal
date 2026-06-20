@@ -37,27 +37,33 @@ struct VersalApp: App {
         }
     }
 
+    @AppStorage("selectedTab") private var selectedTab = 0
+
     private var mainTabView: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             HomeView()
                 .tabItem {
                     Label("Home", systemImage: "house")
                 }
+                .tag(0)
 
             FilesView()
                 .tabItem {
                     Label("Files", systemImage: "doc.on.doc")
                 }
+                .tag(1)
 
             ConvertView()
                 .tabItem {
                     Label("Convert", systemImage: "arrow.triangle.2.circlepath")
                 }
+                .tag(2)
 
             SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gearshape")
                 }
+                .tag(3)
         }
         .tint(.inkBlue)
     }
