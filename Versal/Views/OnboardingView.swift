@@ -3,6 +3,7 @@ import SwiftUI
 struct OnboardingView: View {
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
     @State private var currentPage = 0
+    @State private var haptics = HapticService()
 
     var body: some View {
         ZStack {
@@ -75,7 +76,7 @@ struct OnboardingView: View {
 
                 Spacer()
 
-                Button(action: { withAnimation { currentPage = 1 } }) {
+                Button(action: { haptics.trigger(.press); withAnimation { currentPage = 1 } }) {
                     Text("See what Versal can do")
                         .bodyBoldStyle()
                         .foregroundColor(.white)
@@ -147,7 +148,7 @@ struct OnboardingView: View {
 
                 Spacer()
 
-                Button(action: { hasSeenOnboarding = true }) {
+                Button(action: { haptics.trigger(.success); hasSeenOnboarding = true }) {
                     Text("Get Started")
                         .bodyBoldStyle()
                         .foregroundColor(.white)

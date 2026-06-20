@@ -3,6 +3,7 @@ import SwiftUI
 struct LockScreenView: View {
     @ObservedObject var authService: AuthService
     @State private var hasAttemptedAuth = false
+    @State private var haptics = HapticService()
 
     var body: some View {
         ZStack {
@@ -52,7 +53,10 @@ struct LockScreenView: View {
             do {
                 let success = try await authService.authenticateWithFaceID(reason: "Unlock Versal")
                 if success {
+                    haptics.trigger(.success)
                     authService.isAppLocked = false
+                } else {
+                    haptics.trigger(.destructive)
                 }
             } catch {
                 // Fallback to passcode

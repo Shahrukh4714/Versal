@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ConvertView: View {
     @StateObject private var viewModel = ConverterViewModel()
+    @State private var haptics = HapticService()
 
     var body: some View {
         NavigationStack {
@@ -154,6 +155,7 @@ struct ConvertView: View {
         Button(action: {
             viewModel.selectedFormat = format
             viewModel.startConversion()
+            haptics.trigger(.press)
         }) {
             VStack(spacing: 8) {
                 RoundedRectangle(cornerRadius: 12)
@@ -225,6 +227,7 @@ struct ConvertView: View {
             Image(systemName: "checkmark.circle.fill")
                 .font(.system(size: 64))
                 .foregroundColor(.successGreen)
+                .onAppear { haptics.trigger(.success) }
 
             Text("Conversion complete")
                 .heroHeadlineStyle()
@@ -251,7 +254,7 @@ struct ConvertView: View {
 
             Spacer()
 
-            Button(action: { viewModel.reset() }) {
+            Button(action: { haptics.trigger(.press); viewModel.reset() }) {
                 Text("Convert Another")
                     .bodyBoldStyle()
                     .foregroundColor(.white)

@@ -4,6 +4,7 @@ import PDFKit
 struct PDFViewer: View {
     @StateObject private var viewModel = PDFViewerViewModel()
     let fileURL: URL
+    @State private var haptics = HapticService()
 
     var body: some View {
         VStack(spacing: 0) {
@@ -69,7 +70,7 @@ struct PDFViewer: View {
             .padding(.vertical, 4)
             .background(Color.aiGradientStart.opacity(0.1))
             .cornerRadius(8)
-            .onTapGesture { viewModel.showAIChat = true }
+            .onTapGesture { haptics.trigger(.press); viewModel.showAIChat = true }
 
             Spacer()
 
@@ -86,7 +87,7 @@ struct PDFViewer: View {
             toolbarTab(icon: "pencil.tip.crop.circle", label: "Markup", isLocked: false)
             toolbarTab(icon: "eye.slash", label: "Redact", isLocked: true)
             toolbarTab(icon: "doc.on.doc", label: "Pages", isLocked: false)
-                .onTapGesture { viewModel.showPagesSheet = true }
+                .onTapGesture { haptics.trigger(.press); viewModel.showPagesSheet = true }
             toolbarTab(icon: "square.and.arrow.up", label: "Share", isLocked: false)
         }
         .padding(.horizontal, 8)

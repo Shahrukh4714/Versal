@@ -6,6 +6,7 @@ struct PaywallView: View {
     @State private var showConfirmation = false
     @State private var isLoading = false
     @State private var errorMessage: String?
+    @State private var haptics = HapticService()
 
     private let purchaseService = PurchaseService()
 
@@ -106,11 +107,11 @@ struct PaywallView: View {
                             .foregroundColor(.inkBlue)
                     }
 
-                    Button(action: { dismiss() }) {
-                        Text("Maybe Later")
-                            .bodyStyle()
-                            .foregroundColor(.labelSecondary)
-                    }
+                Button(action: { haptics.trigger(.press); dismiss() }) {
+                Text("Maybe Later")
+                    .bodyStyle()
+                    .foregroundColor(.labelSecondary)
+                }
                 }
                 .padding(.horizontal, Spacing.screenHorizontal)
 
@@ -135,6 +136,7 @@ struct PaywallView: View {
             Image(systemName: "checkmark.circle.fill")
                 .font(.system(size: 72))
                 .foregroundColor(.successGreen)
+                .onAppear { haptics.trigger(.success) }
 
             Text("Welcome to Pro")
                 .heroHeadlineStyle()
