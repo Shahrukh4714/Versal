@@ -233,6 +233,7 @@ struct PDFViewer: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Select") {
+                        haptics.trigger(.press)
                         viewModel.isSelectingPages.toggle()
                     }
                 }
@@ -275,6 +276,7 @@ struct PDFViewer: View {
                             .font(.system(size: 28))
                             .foregroundColor(.inkBlue)
                     }
+                    .accessibilityLabel("Send message")
                     .disabled(searchText.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
                 .padding()

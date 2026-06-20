@@ -72,6 +72,7 @@ struct FaceIDSetupPrompt: View {
     @Binding var isPresented: Bool
     let onEnable: () -> Void
     let onNotNow: () -> Void
+    @State private var haptics = HapticService()
 
     var body: some View {
         VStack(spacing: 20) {
@@ -89,7 +90,7 @@ struct FaceIDSetupPrompt: View {
                 .foregroundColor(.labelSecondary)
                 .multilineTextAlignment(.center)
 
-            Button(action: { onEnable(); isPresented = false }) {
+            Button(action: { haptics.trigger(.success); onEnable(); isPresented = false }) {
                 Text("Enable")
                     .bodyBoldStyle()
                     .foregroundColor(.white)
@@ -99,7 +100,7 @@ struct FaceIDSetupPrompt: View {
                     .cornerRadius(CornerRadius.button)
             }
 
-            Button(action: { onNotNow(); isPresented = false }) {
+            Button(action: { haptics.trigger(.press); onNotNow(); isPresented = false }) {
                 Text("Not Now")
                     .bodyStyle()
                     .foregroundColor(.labelSecondary)

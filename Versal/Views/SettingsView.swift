@@ -47,6 +47,14 @@ struct SettingsView: View {
             } message: {
                 Text(toastMessage ?? "")
             }
+            .alert("Error", isPresented: .init(
+                get: { viewModel.errorMessage != nil },
+                set: { if !$0 { viewModel.errorMessage = nil } }
+            )) {
+                Button("OK") { viewModel.errorMessage = nil }
+            } message: {
+                Text(viewModel.errorMessage ?? "")
+            }
         }
     }
 
@@ -108,6 +116,7 @@ struct SettingsView: View {
                 }
             }
             .onChange(of: viewModel.isFaceIDEnabled) { _, newValue in
+                haptics.trigger(.press)
                 if newValue {
                     showFaceIDPrompt = true
                 }
@@ -123,6 +132,9 @@ struct SettingsView: View {
                         .captionStyle()
                         .foregroundColor(.labelSecondary)
                 }
+            }
+            .onChange(of: viewModel.isPasswordProtectEnabled) { _, _ in
+                haptics.trigger(.press)
             }
             .tint(.inkBlue)
         }
@@ -166,6 +178,9 @@ struct SettingsView: View {
                         .captionStyle()
                         .foregroundColor(.labelSecondary)
                 }
+            }
+            .onChange(of: viewModel.isICloudSyncEnabled) { _, _ in
+                haptics.trigger(.press)
             }
             .tint(.inkBlue)
         }

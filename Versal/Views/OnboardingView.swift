@@ -161,6 +161,7 @@ struct OnboardingView: View {
                 .padding(.bottom, 16)
 
                 Button("Skip") {
+                    haptics.trigger(.press)
                     hasSeenOnboarding = true
                 }
                 .bodyStyle()

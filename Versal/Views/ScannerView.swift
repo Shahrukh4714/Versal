@@ -47,7 +47,7 @@ struct ScannerView: View {
 
             Spacer()
 
-            Button(action: { viewModel.startScan() }) {
+            Button(action: { haptics.trigger(.press); viewModel.startScan() }) {
                 Circle()
                     .fill(Color.inkBlue)
                     .frame(width: 72, height: 72)

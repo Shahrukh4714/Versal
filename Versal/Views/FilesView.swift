@@ -19,7 +19,7 @@ struct FilesView: View {
                         title: "No files yet",
                         subtitle: "Scan your first document to get started",
                         actionTitle: "Scan Your First Document",
-                        action: { showScanner = true }
+                        action: { haptics.trigger(.press); showScanner = true }
                     )
                 } else {
                     fileList
@@ -75,6 +75,7 @@ struct FilesView: View {
         ToolbarItem(placement: .navigationBarTrailing) {
             if !viewModel.isSelectMode {
                 Button("Select") {
+                    haptics.trigger(.press)
                     viewModel.toggleSelectMode()
                 }
                 .foregroundColor(.inkBlue)
@@ -84,6 +85,7 @@ struct FilesView: View {
         if viewModel.isSelectMode {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button("Cancel") {
+                    haptics.trigger(.press)
                     viewModel.toggleSelectMode()
                 }
                 .foregroundColor(.inkBlue)

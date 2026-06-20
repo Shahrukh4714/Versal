@@ -7,6 +7,7 @@ final class SettingsViewModel: ObservableObject {
     @Published var isICloudSyncEnabled: Bool = true
     @Published var subscriptionTier: SubscriptionTier = .free
     @Published var defaultExportFormat: String = "PDF"
+    @Published var errorMessage: String?
 
     @AppStorage("darkModeOption") var darkModeStorage: String = DarkModeOption.system.rawValue
 
@@ -43,23 +44,31 @@ final class SettingsViewModel: ObservableObject {
 
     func toggleFaceID() {
         Task {
-            if !isFaceIDEnabled {
-                let success = try await authService.authenticateWithFaceID(reason: "Enable Face ID lock")
-                if success {
-                    authService.isFaceIDEnabled = true
-                    isFaceIDEnabled = true
+            do {
+                if !isFaceIDEnabled {
+                    let success = try await authService.authenticateWithFaceID(reason: "Enable Face ID lock")
+                    if success {
+                        authService.isFaceIDEnabled = true
+                        isFaceIDEnabled = true
+                    }
+                } else {
+                    authService.isFaceIDEnabled = false
+                    isFaceIDEnabled = false
                 }
-            } else {
-                authService.isFaceIDEnabled = false
-                isFaceIDEnabled = false
+            } catch {
+                errorMessage = error.localizedDescription
             }
         }
     }
 
     func restorePurchase() {
         Task {
-            try await purchaseService.restorePurchases()
-            subscriptionTier = purchaseService.currentTier
+            do {
+                try await purchaseService.restorePurchases()
+                subscriptionTier = purchaseService.currentTier
+            } catch {
+                errorMessage = error.localizedDescription
+            }
         }
     }
 }
