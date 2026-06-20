@@ -1,0 +1,54 @@
+{
+  "identifier" : "CC52BDF8",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "$9.99",
+      "family" : "Pro Monthly",
+      "groupNumber" : 1,
+      "internalID" : "A1B2C3D4",
+      "productID" : "com.versal.pro.monthly",
+      "referenceName" : "Versal Pro Monthly",
+      "subscriptionGroupID" : "D5E6F7G8",
+      "type" : "Auto-Renewable Subscription"
+    },
+    {
+      "displayPrice" : "$49.99",
+      "family" : "Pro Lifetime",
+      "internalID" : "H9I0J1K2",
+      "productID" : "com.versal.pro.lifetime",
+      "referenceName" : "Versal Pro Lifetime",
+      "type" : "Non-Consumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "L3M4N5O6",
+    "observerMode" : false
+  },
+  "subscriptionGroups" : [
+    {
+      "groupID" : "D5E6F7G8",
+      "groupName" : "Pro Subscription",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "$9.99",
+          "internalID" : "A1B2C3D4",
+          "level" : 1,
+          "productID" : "com.versal.pro.monthly",
+          "referenceName" : "Versal Pro Monthly",
+          "subscriptionGroupID" : "D5E6F7G8",
+          "type" : "Auto-Renewable Subscription"
+        }
+      ]
+    }
+  ],
+  "familySubscriptionGroupIDs" : [
+
+  ],
+  "version" : 1.0
+}

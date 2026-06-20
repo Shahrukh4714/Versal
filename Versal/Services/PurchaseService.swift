@@ -3,12 +3,29 @@ import StoreKit
 
 final class PurchaseService: PurchaseServiceProtocol {
     @Published private(set) var currentTier: SubscriptionTier = .free
+    @Published private(set) var monthlyPrice: String = "$9.99/month"
+    @Published private(set) var lifetimePrice: String = "$49.99"
     private let monthlyProductID = "com.versal.pro.monthly"
     private let lifetimeProductID = "com.versal.pro.lifetime"
+    private var monthlyProduct: Product?
+    private var lifetimeProduct: Product?
 
     init() {
         let isPro = UserDefaults.standard.bool(forKey: "isProUser")
         currentTier = isPro ? .pro : .free
+    }
+
+    func loadProducts() async {
+        let products = try? await Product.products(for: [monthlyProductID, lifetimeProductID])
+        for product in products ?? [] {
+            if product.id == monthlyProductID {
+                monthlyProduct = product
+                monthlyPrice = product.displayPrice
+            } else if product.id == lifetimeProductID {
+                lifetimeProduct = product
+                lifetimePrice = product.displayPrice
+            }
+        }
     }
 
     func purchaseMonthly() async throws {

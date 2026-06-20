@@ -35,5 +35,6 @@ targets:
         CODE_SIGN_ENTITLEMENTS: Versal/Versal.entitlements
       debug:
         PROVISIONING_PROFILE_SPECIFIER: ""
+        STOREKIT_CONFIGURATION_FILE_PATH: Versal/StoreKitConfig.storekit
       release:
         PROVISIONING_PROFILE_SPECIFIER: ""
