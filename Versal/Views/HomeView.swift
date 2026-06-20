@@ -3,6 +3,8 @@ import SwiftUI
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @State private var showScanner = false
+    @State private var showSettings = false
+    @State private var haptics = HapticService()
 
     var body: some View {
         NavigationStack {
@@ -20,6 +22,7 @@ struct HomeView: View {
             .navigationBarHidden(true)
         }
         .fullScreenCover(isPresented: $showScanner) { ScannerView() }
+        .sheet(isPresented: $showSettings) { NavigationStack { SettingsView() } }
         .task { await viewModel.loadData() }
     }
 
@@ -40,7 +43,7 @@ struct HomeView: View {
 
             Spacer()
 
-            Button(action: {}) {
+            Button(action: { haptics.trigger(.press); showSettings = true }) {
                 Circle()
                     .fill(Color.inkWash)
                     .frame(width: 40, height: 40)

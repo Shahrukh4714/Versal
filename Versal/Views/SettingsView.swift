@@ -2,6 +2,8 @@ import SwiftUI
 
 struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
+    @State private var showFaceIDPrompt = false
+    @State private var haptics = HapticService()
 
     var body: some View {
         NavigationStack {
@@ -17,6 +19,25 @@ struct SettingsView: View {
             .background(Color.backgroundGrouped)
             .scrollContentBackground(.hidden)
             .navigationTitle("Settings")
+            .overlay {
+                if showFaceIDPrompt {
+                    Color.black.opacity(0.4)
+                        .ignoresSafeArea()
+                        .overlay(
+                            FaceIDSetupPrompt(
+                                isPresented: $showFaceIDPrompt,
+                                onEnable: {
+                                    haptics.trigger(.success)
+                                    viewModel.isFaceIDEnabled = true
+                                    viewModel.toggleFaceID()
+                                },
+                                onNotNow: {
+                                    viewModel.isFaceIDEnabled = false
+                                }
+                            )
+                        )
+                }
+            }
         }
     }
 
@@ -52,12 +73,13 @@ struct SettingsView: View {
             }
 
             if viewModel.subscriptionTier == .pro {
-                Button("Manage Subscription") {}
+                Button("Manage Subscription") { haptics.trigger(.press) }
                     .bodyStyle()
                     .foregroundColor(.inkBlue)
             }
 
             Button("Restore Purchase") {
+                haptics.trigger(.press)
                 viewModel.restorePurchase()
             }
             .bodyStyle()
@@ -76,7 +98,10 @@ struct SettingsView: View {
                         .foregroundColor(.labelSecondary)
                 }
             }
-            .onChange(of: viewModel.isFaceIDEnabled) { _, _ in
+            .onChange(of: viewModel.isFaceIDEnabled) { _, newValue in
+                if newValue {
+                    showFaceIDPrompt = true
+                }
                 viewModel.toggleFaceID()
             }
             .tint(.inkBlue)
@@ -150,11 +175,11 @@ struct SettingsView: View {
                 }
             }
 
-            Button("Support / Contact") {}
+            Button("Support / Contact") { haptics.trigger(.press) }
                 .bodyStyle()
                 .foregroundColor(.inkBlue)
 
-            Button("Privacy Policy") {}
+            Button("Privacy Policy") { haptics.trigger(.press) }
                 .bodyStyle()
                 .foregroundColor(.inkBlue)
         }

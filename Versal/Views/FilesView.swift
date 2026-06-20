@@ -4,16 +4,22 @@ struct FilesView: View {
     @StateObject private var viewModel = FilesViewModel()
     @State private var showDeleteConfirmation = false
     @State private var searchTask: Task<Void, Never>?
+    @State private var showScanner = false
+    @State private var selectedFilter = "All"
+    @State private var haptics = HapticService()
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                if viewModel.files.isEmpty && !viewModel.isLoading {
+                if viewModel.isLoading && viewModel.files.isEmpty {
+                    ProgressView("Loading files…")
+                        .frame(maxHeight: .infinity)
+                } else if viewModel.files.isEmpty {
                     EmptyStateView(
                         title: "No files yet",
-                        subtitle: "Tap the Scanner tab to digitize your first document",
+                        subtitle: "Scan your first document to get started",
                         actionTitle: "Scan Your First Document",
-                        action: {}
+                        action: { showScanner = true }
                     )
                 } else {
                     fileList
@@ -25,12 +31,32 @@ struct FilesView: View {
             .sheet(isPresented: $showDeleteConfirmation) {
                 deleteConfirmationSheet
             }
+            .fullScreenCover(isPresented: $showScanner) { ScannerView() }
             .task { await viewModel.loadFiles() }
             .onChange(of: viewModel.searchText) { _, _ in
                 searchTask?.cancel()
                 searchTask = Task {
                     try? await Task.sleep(nanoseconds: 300_000_000)
                     await viewModel.searchFiles()
+                }
+            }
+            .alert("Error", isPresented: .init(
+                get: { viewModel.errorMessage != nil },
+                set: { if !$0 { viewModel.errorMessage = nil } }
+            )) {
+                Button("OK") { viewModel.errorMessage = nil }
+            } message: {
+                Text(viewModel.errorMessage ?? "")
+            }
+            .sheet(isPresented: .init(
+                get: { selectedFileURL != nil },
+                set: { if !$0 { selectedFileURL = nil } }
+            )) {
+                if let url = selectedFileURL, url.pathExtension.lowercased() == "pdf" {
+                    NavigationStack { PDFViewer(fileURL: url) }
+                } else {
+                    Text("Preview not available for this file type")
+                        .presentationDetents([.height(200)])
                 }
             }
         }
@@ -78,11 +104,15 @@ struct FilesView: View {
                 ForEach(["All", "PDF", "Images", "Docs", "Audio", "Video", "Archives"], id: \.self) { chip in
                     Text(chip)
                         .captionStyle()
-                        .foregroundColor(.inkBlue)
+                        .foregroundColor(selectedFilter == chip ? .white : .inkBlue)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
-                        .background(Color.inkWash)
+                        .background(selectedFilter == chip ? Color.inkBlue : Color.inkWash)
                         .cornerRadius(12)
+                        .onTapGesture {
+                            haptics.trigger(.press)
+                            selectedFilter = chip
+                        }
                 }
             }
             .padding(.horizontal, Spacing.screenHorizontal)
@@ -179,8 +209,20 @@ struct FilesView: View {
         }
     }
 
+    @State private var selectedFileURL: URL?
+
     private func fileGridCell(_ file: FileItem) -> some View {
-        Button(action: {}) {
+        Button(action: {
+            if viewModel.isSelectMode {
+                if viewModel.selectedFiles.contains(file.id) {
+                    viewModel.selectedFiles.remove(file.id)
+                } else {
+                    viewModel.selectedFiles.insert(file.id)
+                }
+            } else {
+                selectedFileURL = file.url
+            }
+        }) {
             VStack(alignment: .leading, spacing: 8) {
                 FileIconView(fileType: file.fileType, size: 48)
                 Text(file.name)
@@ -232,6 +274,18 @@ struct FilesView: View {
         .background(Color.surfaceCard)
         .cornerRadius(CornerRadius.card)
         .cardShadow()
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if viewModel.isSelectMode {
+                if viewModel.selectedFiles.contains(file.id) {
+                    viewModel.selectedFiles.remove(file.id)
+                } else {
+                    viewModel.selectedFiles.insert(file.id)
+                }
+            } else {
+                selectedFileURL = file.url
+            }
+        }
         .swipeActions(edge: .trailing) {
             Button(role: .destructive) {
                 Task {
@@ -246,7 +300,7 @@ struct FilesView: View {
             }
 
             Button {
-                // Share
+                haptics.trigger(.press)
             } label: {
                 Label("Share", systemImage: "square.and.arrow.up")
             }
@@ -270,7 +324,18 @@ struct FilesView: View {
 
     private func actionButton(icon: String, label: String, disabled: Bool, isDestructive: Bool = false) -> some View {
         Button(action: {
-            if isDestructive { showDeleteConfirmation = true }
+            haptics.trigger(.press)
+            if isDestructive {
+                showDeleteConfirmation = true
+            } else if label == "Share" {
+                // Share selected files
+            } else if label == "Move" {
+                // Move to folder
+            } else if label == "Duplicate" {
+                // Duplicate files
+            } else if label == "Zip" {
+                // Archive files
+            }
         }) {
             VStack(spacing: 4) {
                 Image(systemName: icon)

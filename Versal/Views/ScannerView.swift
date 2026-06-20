@@ -3,6 +3,7 @@ import SwiftUI
 struct ScannerView: View {
     @StateObject private var viewModel = ScannerViewModel()
     @Environment(\.dismiss) private var dismiss
+    @State private var haptics = HapticService()
 
     var body: some View {
         NavigationStack {
@@ -15,6 +16,14 @@ struct ScannerView: View {
             }
             .background(Color.black)
             .navigationBarHidden(true)
+        }
+        .alert("Scan Error", isPresented: .init(
+            get: { viewModel.errorMessage != nil },
+            set: { if !$0 { viewModel.errorMessage = nil } }
+        )) {
+            Button("OK") { viewModel.errorMessage = nil }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
         }
     }
 
@@ -77,14 +86,14 @@ struct ScannerView: View {
                                 .padding(.vertical, 8)
                                 .background(viewModel.selectedFilter == filter ? Color.inkBlue : Color.inkWash)
                                 .cornerRadius(14)
-                                .onTapGesture { viewModel.applyFilter(filter) }
+                                .onTapGesture { haptics.trigger(.press); viewModel.applyFilter(filter) }
                         }
                     }
                     .padding(.horizontal, 16)
                 }
 
                 HStack(spacing: 16) {
-                    Button(action: { viewModel.retake() }) {
+                    Button(action: { haptics.trigger(.press); viewModel.retake() }) {
                         Text("Retake")
                             .bodyBoldStyle()
                             .foregroundColor(.inkBlue)
@@ -94,7 +103,7 @@ struct ScannerView: View {
                             .cornerRadius(CornerRadius.button)
                     }
 
-                    Button(action: { viewModel.saveScan() }) {
+                    Button(action: { haptics.trigger(.success); viewModel.saveScan() }) {
                         Text("Save & Export")
                             .bodyBoldStyle()
                             .foregroundColor(.white)

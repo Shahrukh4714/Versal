@@ -37,17 +37,17 @@ struct PDFViewer: View {
     private var navToolbar: some ToolbarContent {
         ToolbarItem(placement: .navigationBarTrailing) {
             HStack(spacing: 12) {
-                Button(action: {}) {
+                Button(action: { haptics.trigger(.press) }) {
                     Image(systemName: "square.and.arrow.up")
                 }
                 .accessibilityLabel("Share PDF")
                 Menu {
-                    Button("Fill Forms", action: {})
-                    Button("Rename", action: {})
-                    Button("Duplicate", action: {})
-                    Button("Document Info", action: {})
+                    Button("Fill Forms", action: { haptics.trigger(.press) })
+                    Button("Rename", action: { haptics.trigger(.press) })
+                    Button("Duplicate", action: { haptics.trigger(.press) })
+                    Button("Document Info", action: { haptics.trigger(.press) })
                     Divider()
-                    Button("Delete", role: .destructive, action: {})
+                    Button("Delete", role: .destructive, action: { haptics.trigger(.destructive) })
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
@@ -57,10 +57,14 @@ struct PDFViewer: View {
         }
     }
 
+    @State private var searchText = ""
+
     private var utilityToolbar: some View {
         HStack(spacing: 16) {
             toolbarButton(icon: "magnifyingglass", label: "Search")
+                .onTapGesture { haptics.trigger(.press) }
             toolbarButton(icon: "lock", label: "Lock", isLocked: true)
+                .onTapGesture { haptics.trigger(.press); showPaywall = true }
 
             HStack(spacing: 4) {
                 LinearGradient(colors: [.aiGradientStart, .aiGradientEnd], startPoint: .leading, endPoint: .trailing)
@@ -79,6 +83,7 @@ struct PDFViewer: View {
             Spacer()
 
             toolbarButton(icon: "number", label: "Pages")
+                .onTapGesture { haptics.trigger(.press); viewModel.showPagesSheet = true }
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
@@ -138,6 +143,18 @@ struct PDFViewer: View {
         .padding(.vertical, 4)
     }
 
+    private func sendChatMessage() {
+        let text = searchText.trimmingCharacters(in: .whitespaces)
+        guard !text.isEmpty else { return }
+        haptics.trigger(.press)
+        viewModel.chatMessages.append((text, true))
+        searchText = ""
+        Task {
+            try? await Task.sleep(nanoseconds: 500_000_000)
+            viewModel.chatMessages.append(("I'm an offline AI assistant. This feature requires the CoreML model to be downloaded.", false))
+        }
+    }
+
     private var pageIndicator: some View {
         Text("\(viewModel.currentPage + 1) of \(viewModel.totalPages)")
             .microStyle()
@@ -152,10 +169,10 @@ struct PDFViewer: View {
         NavigationStack {
             VStack(spacing: 0) {
                 HStack(spacing: 12) {
-                    Button("Add Page") {}
+                    Button("Add Page") { haptics.trigger(.press) }
                         .bodyBoldStyle()
                         .foregroundColor(.inkBlue)
-                    Button("Merge PDF") {}
+                    Button("Merge PDF") { haptics.trigger(.press) }
                         .bodyBoldStyle()
                         .foregroundColor(.inkBlue)
                     Spacer()
@@ -191,9 +208,9 @@ struct PDFViewer: View {
 
                 if !viewModel.selectedPages.isEmpty {
                     HStack(spacing: 20) {
-                        Button("Rotate") {}
-                        Button("Extract") {}
-                        Button("Delete", role: .destructive) { viewModel.deleteSelectedPages() }
+                        Button("Rotate") { haptics.trigger(.press) }
+                        Button("Extract") { haptics.trigger(.press) }
+                        Button("Delete", role: .destructive) { haptics.trigger(.destructive); viewModel.deleteSelectedPages() }
                     }
                     .padding()
                     .background(Color.surfaceCard)
@@ -234,17 +251,19 @@ struct PDFViewer: View {
                 }
 
                 HStack(spacing: 8) {
-                    TextField("Ask about this PDF...", text: .constant(""))
+                    TextField("Ask about this PDF...", text: $searchText)
                         .bodyStyle()
                         .padding(10)
                         .background(Color.inkWash)
                         .cornerRadius(10)
+                        .onSubmit { sendChatMessage() }
 
-                    Button(action: {}) {
+                    Button(action: { sendChatMessage() }) {
                         Image(systemName: "arrow.up.circle.fill")
                             .font(.system(size: 28))
                             .foregroundColor(.inkBlue)
                     }
+                    .disabled(searchText.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
                 .padding()
             }

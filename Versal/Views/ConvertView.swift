@@ -30,7 +30,7 @@ struct ConvertView: View {
                     .bodyStyle()
                     .foregroundColor(.labelSecondary)
 
-                Button(action: {}) {
+                Button(action: { haptics.trigger(.press); viewModel.selectSource(FileItem(name: "Sample.pdf", fileType: .pdf, url: URL(fileURLWithPath: ""), createdAt: Date(), fileSize: 0, formattedSize: "0 KB", formattedDate: "")) }) {
                     ZStack {
                         InkBleedGradient()
                             .cornerRadius(CornerRadius.card)
@@ -114,7 +114,7 @@ struct ConvertView: View {
                             Text(file.formattedSize).captionStyle().foregroundColor(.labelTertiary)
                         }
                         Spacer()
-                        Button("Change") {}
+                        Button("Change") { haptics.trigger(.press); viewModel.reset() }
                             .captionStyle()
                             .foregroundColor(.inkBlue)
                     }
@@ -143,7 +143,7 @@ struct ConvertView: View {
 
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                     ForEach(viewModel.availableCategories, id: \.rawValue) { category in
-                        Button(action: {}) {
+                        Button(action: { haptics.trigger(.press) }) {
                             Text(category.rawValue)
                                 .bodyBoldStyle()
                                 .foregroundColor(.inkBlue)

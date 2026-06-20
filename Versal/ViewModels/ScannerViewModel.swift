@@ -8,6 +8,7 @@ final class ScannerViewModel: ObservableObject {
     @Published var showReview: Bool = false
     @Published var selectedFilter: ScanFilter = .original
     @Published var savedFile: FileItem?
+    @Published var errorMessage: String?
 
     enum ScanFilter: String, CaseIterable {
         case original = "Original"
@@ -39,7 +40,7 @@ final class ScannerViewModel: ObservableObject {
                 showReview = true
                 hapticService.trigger(.success)
             } catch {
-                // User cancelled or error
+                errorMessage = error.localizedDescription
             }
             isScanning = false
         }
@@ -54,7 +55,7 @@ final class ScannerViewModel: ObservableObject {
                 showReview = false
                 hapticService.trigger(.success)
             } catch {
-                // handle error
+                errorMessage = error.localizedDescription
             }
         }
     }

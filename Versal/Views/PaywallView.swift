@@ -28,6 +28,7 @@ struct PaywallView: View {
                             .font(.system(size: 24))
                             .foregroundColor(.labelQuaternary)
                     }
+                    .accessibilityLabel("Close")
                 }
                 .padding(.horizontal, Spacing.screenHorizontal)
 
@@ -98,7 +99,7 @@ struct PaywallView: View {
                 }
 
                 VStack(spacing: 12) {
-                    Button(action: { purchase() }) {
+                    Button(action: { haptics.trigger(.press); purchase() }) {
                         HStack {
                             if isLoading {
                                 ProgressView()
@@ -116,7 +117,7 @@ struct PaywallView: View {
                     }
                     .disabled(isLoading)
 
-                    Button(action: { Task { try? await purchaseService.restorePurchases() } }) {
+                    Button(action: { haptics.trigger(.press); Task { try? await purchaseService.restorePurchases() } }) {
                         Text("Restore Purchase")
                             .bodyStyle()
                             .foregroundColor(.inkBlue)
@@ -167,7 +168,7 @@ struct PaywallView: View {
 
             Spacer()
 
-            Button(action: { dismiss() }) {
+            Button(action: { haptics.trigger(.press); dismiss() }) {
                 Text("Start Using Versal Pro")
                     .bodyBoldStyle()
                     .foregroundColor(.white)
