@@ -3,8 +3,17 @@ import SwiftUI
 @main
 struct VersalApp: App {
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
+    @AppStorage("darkModeOption") private var darkModeStorage = "System"
     @StateObject private var authService = AuthService()
     @Environment(\.scenePhase) private var scenePhase
+
+    private var preferredColorScheme: ColorScheme? {
+        switch darkModeStorage {
+        case "Light": return .light
+        case "Dark": return .dark
+        default: return nil
+        }
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -14,6 +23,7 @@ struct VersalApp: App {
                 LockScreenView(authService: authService)
             } else {
                 mainTabView
+                    .preferredColorScheme(preferredColorScheme)
                     .onChange(of: scenePhase) { _, newPhase in
                         if newPhase == .active && authService.isFaceIDEnabled {
                             Task {

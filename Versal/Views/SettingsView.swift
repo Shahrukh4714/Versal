@@ -27,7 +27,6 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("No account")
                         .bodyBoldStyle()
-                        .foregroundColor(.labelPrimary)
                     Text("Your data stays on this device")
                         .captionStyle()
                         .foregroundColor(.labelSecondary)
@@ -114,9 +113,9 @@ struct SettingsView: View {
 
     private var appearanceSection: some View {
         Section("Appearance") {
-            Picker("Dark Mode", selection: $viewModel.darkModeOption) {
+            Picker("Dark Mode", selection: $viewModel.darkModeStorage) {
                 ForEach(SettingsViewModel.DarkModeOption.allCases, id: \.rawValue) { option in
-                    Text(option.rawValue).tag(option)
+                    Text(option.rawValue).tag(option.rawValue)
                 }
             }
             .tint(.inkBlue)

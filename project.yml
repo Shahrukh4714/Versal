@@ -13,14 +13,27 @@ settings:
     DEVELOPMENT_TEAM: ""
     CODE_SIGN_STYLE: Automatic
 
+packages:
+  ZipFoundation:
+    url: https://github.com/weichsel/ZIPFoundation
+    from: 0.9.18
+
 targets:
   Versal:
     type: application
     platform: iOS
     sources:
       - path: Versal
+    dependencies:
+      - package: ZipFoundation
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.versal.app
         INFOPLIST_FILE: Versal/Info.plist
         SWIFT_VERSION: "5.9"
+        TARGETED_DEVICE_FAMILY: "1"
+        CODE_SIGN_ENTITLEMENTS: Versal/Versal.entitlements
+      debug:
+        PROVISIONING_PROFILE_SPECIFIER: ""
+      release:
+        PROVISIONING_PROFILE_SPECIFIER: ""
