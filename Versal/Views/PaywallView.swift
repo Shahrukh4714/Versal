@@ -23,7 +23,7 @@ struct PaywallView: View {
             VStack(spacing: 24) {
                 HStack {
                     Spacer()
-                    Button(action: { dismiss() }) {
+                    Button(action: { haptics.trigger(.press); dismiss() }) {
                         Image(systemName: "xmark.circle.fill")
                             .font(.system(size: 24))
                             .foregroundColor(.labelQuaternary)

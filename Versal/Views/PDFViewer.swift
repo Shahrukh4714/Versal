@@ -285,7 +285,7 @@ struct PDFViewer: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") { viewModel.showAIChat = false }
+                    Button("Done") { haptics.trigger(.press); viewModel.showAIChat = false }
                 }
             }
         }

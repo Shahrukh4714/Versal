@@ -27,7 +27,7 @@ struct LockScreenView: View {
 
                 Spacer()
 
-                Button(action: { authenticate() }) {
+                Button(action: { haptics.trigger(.press); authenticate() }) {
                     Text("Unlock")
                         .bodyBoldStyle()
                         .foregroundColor(.white)
