@@ -54,11 +54,6 @@ struct VersalApp: App {
                     Label("Convert", systemImage: "arrow.triangle.2.circlepath")
                 }
 
-            ScannerView()
-                .tabItem {
-                    Label("Scanner", systemImage: "camera.viewfinder")
-                }
-
             SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gearshape")

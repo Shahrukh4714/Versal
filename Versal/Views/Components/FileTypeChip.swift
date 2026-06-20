@@ -5,7 +5,7 @@ struct FileTypeChip: View {
 
     var body: some View {
         Text(fileType.rawValue)
-            .font(.system(size: 10, weight: .bold, design: .monospaced))
+            .microStyle()
             .foregroundColor(Color.fileIconColor(for: fileType))
             .padding(.horizontal, 6)
             .padding(.vertical, 2)

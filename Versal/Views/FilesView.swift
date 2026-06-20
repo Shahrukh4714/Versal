@@ -99,7 +99,7 @@ struct FilesView: View {
                             .frame(width: 60, height: 60)
                             .overlay(
                                 Image(systemName: "folder")
-                                    .font(.system(size: 22))
+                                    .font(.system(size: IconSize.toolbar))
                                     .foregroundColor(.inkBlue)
                             )
                         Text(folder.name)
@@ -131,16 +131,17 @@ struct FilesView: View {
                         .captionStyle()
                         .foregroundColor(.inkBlue)
                     Image(systemName: "chevron.down")
-                        .font(.system(size: 10))
+                        .font(.caption2)
                         .foregroundColor(.inkBlue)
                 }
             }
 
             Button(action: { viewModel.isGridView.toggle() }) {
                 Image(systemName: viewModel.isGridView ? "list.bullet" : "square.grid.2x2")
-                    .font(.system(size: 16))
+                    .font(.system(size: IconSize.inline))
                     .foregroundColor(.inkBlue)
             }
+            .accessibilityLabel(viewModel.isGridView ? "Switch to list view" : "Switch to grid view")
             .padding(.leading, 12)
         }
         .padding(.horizontal, Spacing.screenHorizontal)
@@ -233,7 +234,13 @@ struct FilesView: View {
         .cardShadow()
         .swipeActions(edge: .trailing) {
             Button(role: .destructive) {
-                Task { try? await FileService().deleteFile(file); await viewModel.loadFiles() }
+                Task {
+                    do {
+                        try await viewModel.deleteFile(file)
+                    } catch {
+                        viewModel.errorMessage = error.localizedDescription
+                    }
+                }
             } label: {
                 Label("Delete", systemImage: "trash")
             }
@@ -267,7 +274,7 @@ struct FilesView: View {
         }) {
             VStack(spacing: 4) {
                 Image(systemName: icon)
-                    .font(.system(size: 18))
+                    .font(.system(size: IconSize.inline))
                 Text(label)
                     .microStyle()
             }

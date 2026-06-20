@@ -48,6 +48,7 @@ struct ScannerView: View {
                             .foregroundColor(.white)
                     )
             }
+            .accessibilityLabel("Capture document")
             .padding(.bottom, 40)
         }
     }

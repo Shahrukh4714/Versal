@@ -24,6 +24,11 @@ final class AuthService: ObservableObject, AuthServiceProtocol {
         return try await context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason)
     }
 
+    func authenticateWithDevicePasscode(reason: String) async throws -> Bool {
+        let context = LAContext()
+        return try await context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason)
+    }
+
     func lockFile(_ file: FileItem) async throws {
         // File-level encryption using device key
         let data = try Data(contentsOf: file.url)

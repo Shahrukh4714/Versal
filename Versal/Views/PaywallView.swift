@@ -31,6 +31,21 @@ struct PaywallView: View {
                 }
                 .padding(.horizontal, Spacing.screenHorizontal)
 
+                if let error = errorMessage {
+                    HStack(spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundColor(.destructiveRed)
+                        Text(error)
+                            .captionStyle()
+                            .foregroundColor(.destructiveRed)
+                    }
+                    .padding(12)
+                    .frame(maxWidth: .infinity)
+                    .background(Color.destructiveRed.opacity(0.1))
+                    .cornerRadius(8)
+                    .padding(.horizontal, Spacing.screenHorizontal)
+                }
+
                 VStack(spacing: 16) {
                     Image(systemName: "crown.fill")
                         .font(.system(size: 40))
@@ -75,7 +90,7 @@ struct PaywallView: View {
 
                 VStack(spacing: 8) {
                     Text("$49.99")
-                        .font(.system(size: 40, weight: .heavy))
+                        .largeTitleStyle()
                         .foregroundColor(.labelPrimary)
                     Text("One-time purchase")
                         .captionStyle()

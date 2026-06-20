@@ -37,7 +37,7 @@ struct ConvertView: View {
                         HStack {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Select a File")
-                                    .font(.system(size: 18, weight: .bold))
+                                    .sectionHeaderStyle()
                                     .foregroundColor(.white)
                                 Text("Tap to browse files")
                                     .captionStyle()
@@ -59,6 +59,14 @@ struct ConvertView: View {
                     ForEach(ConversionCategory.allCases, id: \.rawValue) { category in
                         categoryCard(category)
                     }
+                }
+                .padding(.horizontal, Spacing.screenHorizontal)
+
+                HStack(spacing: 4) {
+                    ProLockBadge()
+                    Text("Batch conversion and premium formats require Pro")
+                        .captionStyle()
+                        .foregroundColor(.labelTertiary)
                 }
                 .padding(.horizontal, Spacing.screenHorizontal)
             }
@@ -191,7 +199,7 @@ struct ConvertView: View {
 
                 VStack(spacing: 4) {
                     Text("\(Int(viewModel.conversionProgress * 100))%")
-                        .font(.system(size: 24, weight: .bold))
+                        .heroHeadlineStyle()
                         .foregroundColor(.inkBlue)
                     Text("Converting")
                         .microStyle()

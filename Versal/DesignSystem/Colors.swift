@@ -48,15 +48,6 @@ extension Color {
     }
 
     static func fileBackgroundColor(for type: FileType) -> Color {
-        switch type {
-        case .pdf: return Color(red: 0xFE / 255, green: 0xF2 / 255, blue: 0xF2 / 255)
-        case .docx: return Color(red: 0xEF / 255, green: 0xF6 / 255, blue: 0xFF / 255)
-        case .jpg: return Color(red: 0xFF / 255, green: 0xFB / 255, blue: 0xEB / 255)
-        case .png: return Color(red: 0xEC / 255, green: 0xFD / 255, blue: 0xF5 / 255)
-        case .mp4: return Color(red: 0xF5 / 255, green: 0xF3 / 255, blue: 0xFF / 255)
-        case .zip: return Color(red: 0xF9 / 255, green: 0xFA / 255, blue: 0xFB / 255)
-        case .pptx: return Color(red: 0xFF / 255, green: 0xF7 / 255, blue: 0xED / 255)
-        case .xlsx: return Color(red: 0xF0 / 255, green: 0xFD / 255, blue: 0xF4 / 255)
-        }
+        fileIconColor(for: type).opacity(0.12)
     }
 }

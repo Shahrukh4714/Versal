@@ -5,6 +5,7 @@ struct PDFViewer: View {
     @StateObject private var viewModel = PDFViewerViewModel()
     let fileURL: URL
     @State private var haptics = HapticService()
+    @State private var showPaywall = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -28,6 +29,7 @@ struct PDFViewer: View {
         .toolbar { navToolbar }
         .sheet(isPresented: $viewModel.showPagesSheet) { pagesSheet }
         .sheet(isPresented: $viewModel.showAIChat) { aiChatSheet }
+        .sheet(isPresented: $showPaywall) { PaywallView() }
         .task { viewModel.loadPDF(at: fileURL) }
     }
 
@@ -38,6 +40,7 @@ struct PDFViewer: View {
                 Button(action: {}) {
                     Image(systemName: "square.and.arrow.up")
                 }
+                .accessibilityLabel("Share PDF")
                 Menu {
                     Button("Fill Forms", action: {})
                     Button("Rename", action: {})
@@ -48,6 +51,7 @@ struct PDFViewer: View {
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
+                .accessibilityLabel("More options")
             }
             .foregroundColor(.inkBlue)
         }
@@ -63,7 +67,7 @@ struct PDFViewer: View {
                     .frame(width: 22, height: 22)
                     .mask(Image(systemName: "brain.head.profile").font(.system(size: 14)))
                 Text("AI")
-                    .font(.system(size: 11, weight: .bold))
+                    .captionStyle()
                     .foregroundColor(.aiGradientStart)
             }
             .padding(.horizontal, 8)
@@ -84,11 +88,15 @@ struct PDFViewer: View {
     private var bottomToolbar: some View {
         HStack(spacing: 0) {
             toolbarTab(icon: "signature", label: "Sign", isLocked: true)
+                .onTapGesture { haptics.trigger(.press); showPaywall = true }
             toolbarTab(icon: "pencil.tip.crop.circle", label: "Markup", isLocked: false)
+                .onTapGesture { haptics.trigger(.press) }
             toolbarTab(icon: "eye.slash", label: "Redact", isLocked: true)
+                .onTapGesture { haptics.trigger(.press); showPaywall = true }
             toolbarTab(icon: "doc.on.doc", label: "Pages", isLocked: false)
                 .onTapGesture { haptics.trigger(.press); viewModel.showPagesSheet = true }
             toolbarTab(icon: "square.and.arrow.up", label: "Share", isLocked: false)
+                .onTapGesture { haptics.trigger(.press) }
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 6)
@@ -99,7 +107,7 @@ struct PDFViewer: View {
     private func toolbarButton(icon: String, label: String, isLocked: Bool = false) -> some View {
         HStack(spacing: 4) {
             Image(systemName: icon)
-                .font(.system(size: 14))
+                .font(.system(size: IconSize.logomarkSmall))
             if isLocked {
                 ProLockBadge()
             }
@@ -115,7 +123,7 @@ struct PDFViewer: View {
         VStack(spacing: 2) {
             ZStack {
                 Image(systemName: icon)
-                    .font(.system(size: 18))
+                    .font(.system(size: IconSize.inline))
                     .foregroundColor(isLocked ? .labelQuaternary : .labelPrimary)
                 if isLocked {
                     ProLockBadge()
@@ -244,7 +252,7 @@ struct PDFViewer: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Close") { viewModel.showAIChat = false }
+                    Button("Done") { viewModel.showAIChat = false }
                 }
             }
         }

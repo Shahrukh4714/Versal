@@ -57,7 +57,7 @@ struct OnboardingView: View {
                         )
 
                     Image(systemName: "antenna.radiowaves.left.and.right.slash")
-                        .font(.system(size: 18))
+                        .font(.system(size: IconSize.inline))
                         .foregroundColor(.successGreen)
                         .offset(x: 70, y: -100)
 
@@ -173,7 +173,7 @@ struct OnboardingView: View {
     private func statItem(_ number: String, _ label: String) -> some View {
         VStack(spacing: 4) {
             Text(number)
-                .font(.system(size: 24, weight: .bold))
+                .heroHeadlineStyle()
                 .foregroundColor(.white)
             Text(label)
                 .captionStyle()
@@ -184,7 +184,7 @@ struct OnboardingView: View {
     private func featureBadge(_ text: String, _ icon: String, _ color: Color) -> some View {
         HStack(spacing: 6) {
             Image(systemName: icon)
-                .font(.system(size: 12))
+                .captionStyle()
                 .foregroundColor(color)
             Text(text)
                 .microStyle()

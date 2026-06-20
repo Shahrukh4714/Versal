@@ -10,6 +10,7 @@ final class FilesViewModel: ObservableObject {
     @Published var selectedFiles: Set<UUID> = []
     @Published var isGridView: Bool = true
     @Published var isLoading: Bool = false
+    @Published var errorMessage: String?
 
     enum SortOption: String, CaseIterable {
         case date = "Date"
@@ -57,6 +58,11 @@ final class FilesViewModel: ObservableObject {
         case .name: return files.sorted { $0.name < $1.name }
         case .size: return files.sorted { $0.fileSize > $1.fileSize }
         }
+    }
+
+    func deleteFile(_ file: FileItem) async throws {
+        try await fileService.deleteFile(file)
+        await loadFiles()
     }
 
     func deleteSelected() {

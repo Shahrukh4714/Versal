@@ -27,7 +27,7 @@ struct EmptyStateView: View {
             if let actionTitle = actionTitle, let action = action {
                 Button(action: action) {
                     Text(actionTitle)
-                        .font(.system(size: 15, weight: .semibold))
+                        .bodyBoldStyle()
                         .foregroundColor(.white)
                         .padding(.horizontal, 24)
                         .padding(.vertical, 14)

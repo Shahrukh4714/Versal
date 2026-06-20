@@ -19,6 +19,7 @@ struct HomeView: View {
             .background(Color.backgroundGrouped)
             .navigationBarHidden(true)
         }
+        .fullScreenCover(isPresented: $showScanner) { ScannerView() }
         .task { await viewModel.loadData() }
     }
 
@@ -32,7 +33,7 @@ struct HomeView: View {
                 HStack(spacing: 8) {
                     LogomarkContainer(size: IconSize.logomark)
                     Text("Versal")
-                        .font(.system(size: 20, weight: .heavy))
+                        .font(.title2.weight(.heavy))
                         .foregroundColor(.labelPrimary)
                 }
             }
@@ -45,10 +46,11 @@ struct HomeView: View {
                     .frame(width: 40, height: 40)
                     .overlay(
                         Image(systemName: "person.crop.circle")
-                            .font(.system(size: 18))
+                            .font(.system(size: IconSize.inline))
                             .foregroundColor(.inkBlue)
                     )
             }
+            .accessibilityLabel("Profile")
         }
         .padding(.top, 8)
     }
@@ -59,9 +61,9 @@ struct HomeView: View {
                 .frame(maxWidth: .infinity)
 
             VStack(spacing: 10) {
-                quickActionTile(icon: "arrow.triangle.2.circlepath", label: "Convert")
-                quickActionTile(icon: "doc.on.doc", label: "Merge PDF")
-                quickActionTile(icon: "folder", label: "All Files")
+                quickActionTile(icon: "arrow.triangle.2.circlepath", label: "Convert", action: { viewModel.didTapConvert() })
+                quickActionTile(icon: "doc.on.doc", label: "Merge PDF", action: { viewModel.didTapConvert() })
+                quickActionTile(icon: "folder", label: "All Files", action: { viewModel.didTapAllFiles() })
             }
             .frame(width: UIScreen.main.bounds.width * 0.38)
         }
@@ -78,11 +80,11 @@ struct HomeView: View {
                 GrainOverlay()
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Scan Document")
-                        .font(.system(size: 16, weight: .bold))
+                        .font(.headline)
                         .foregroundColor(.white)
 
                     Text("Point, capture,\ndone.")
-                        .font(.system(size: 12))
+                        .captionStyle()
                         .foregroundColor(.white.opacity(0.8))
 
                     Spacer()
@@ -94,7 +96,7 @@ struct HomeView: View {
                                 .stroke(Color.white.opacity(0.4), lineWidth: 1.5)
                                 .frame(width: 44, height: 32)
                             Image(systemName: "document.viewfinder")
-                                .font(.system(size: 16))
+                                .font(.system(size: IconSize.inline))
                                 .foregroundColor(.white.opacity(0.7))
                         }
                     }
@@ -106,17 +108,15 @@ struct HomeView: View {
         .cardShadow()
     }
 
-    private func quickActionTile(icon: String, label: String) -> some View {
-        Button(action: {
-            viewModel.didTapConvert()
-        }) {
+    private func quickActionTile(icon: String, label: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
             HStack(spacing: 10) {
                 ZStack {
                     RoundedRectangle(cornerRadius: CornerRadius.smallIconContainer)
                         .fill(Color.inkWash)
                         .frame(width: IconSize.smallContainer, height: IconSize.smallContainer)
                     Image(systemName: icon)
-                        .font(.system(size: 14))
+                        .font(.system(size: IconSize.logomarkSmall))
                         .foregroundColor(.inkBlue)
                 }
 
@@ -244,12 +244,12 @@ struct HomeView: View {
                         .fill(Color.inkWash)
                         .frame(width: 36, height: 36)
                     Image(systemName: "faceid")
-                        .font(.system(size: 14))
+                        .font(.system(size: IconSize.logomarkSmall))
                         .foregroundColor(.inkBlue)
                 }
             } else {
                 Image(systemName: "doc.text")
-                    .font(.system(size: 14))
+                    .font(.system(size: IconSize.logomarkSmall))
                     .foregroundColor(.fileIconColor(for: .pdf))
                     .frame(width: 36, height: 36)
                     .background(Color.fileBackgroundColor(for: .pdf))

@@ -18,10 +18,10 @@ struct LockScreenView: View {
                     .foregroundColor(.inkBlue)
 
                 Text("Versal is locked")
-                    .font(.system(size: 24, weight: .bold))
+                    .heroHeadlineStyle()
                     .foregroundColor(.white)
 
-                Text("Authenticate to access your files")
+                Text("Unlock Versal to access your files")
                     .bodyStyle()
                     .foregroundColor(.labelSecondary)
 
@@ -59,7 +59,10 @@ struct LockScreenView: View {
                     haptics.trigger(.destructive)
                 }
             } catch {
-                // Fallback to passcode
+                haptics.trigger(.error)
+                if let success = try? await authService.authenticateWithDevicePasscode(reason: "Unlock Versal"), success {
+                    authService.isAppLocked = false
+                }
             }
         }
     }
@@ -75,6 +78,7 @@ struct FaceIDSetupPrompt: View {
             Image(systemName: "faceid")
                 .font(.system(size: 48))
                 .foregroundColor(.inkBlue)
+                .accessibilityLabel("Face ID")
 
             Text("Lock Versal with Face ID?")
                 .sectionHeaderStyle()

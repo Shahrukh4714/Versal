@@ -13,6 +13,8 @@ final class HapticService: HapticServiceProtocol {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
         case .press:
             UIImpactFeedbackGenerator(style: .soft).impactOccurred(intensity: 0.7)
+        case .error:
+            UINotificationFeedbackGenerator().notificationOccurred(.warning)
         }
     }
 }

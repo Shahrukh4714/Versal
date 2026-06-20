@@ -5,59 +5,59 @@ import SwiftUI
 struct LargeTitle: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .font(.system(size: 28, weight: .heavy, design: .default))
+            .font(.largeTitle.weight(.heavy))
     }
 }
 
 struct HeroHeadline: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .font(.system(size: 24, weight: .heavy, design: .default))
-            .lineSpacing(24 * 0.2)
+            .font(.title.weight(.heavy))
+            .lineSpacing(4)
     }
 }
 
 struct SectionHeaderText: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .font(.system(size: 17, weight: .bold, design: .default))
+            .font(.headline)
     }
 }
 
 struct BodyBoldText: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .font(.system(size: 14, weight: .semibold, design: .default))
+            .font(.subheadline.weight(.semibold))
     }
 }
 
 struct BodyText: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .font(.system(size: 13, weight: .regular, design: .default))
+            .font(.footnote)
     }
 }
 
 struct CaptionText: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .font(.system(size: 12, weight: .medium, design: .default))
+            .font(.caption.weight(.medium))
     }
 }
 
 struct KickerText: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .font(.system(size: 11.5, weight: .bold, design: .default))
+            .font(.caption.weight(.bold))
             .textCase(.uppercase)
-            .kerning(0.08 * 11.5)
+            .kerning(1)
     }
 }
 
 struct MicroText: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .font(.system(size: 10, weight: .bold, design: .monospaced))
+            .font(.caption2.weight(.bold).monospacedDigit())
     }
 }
 

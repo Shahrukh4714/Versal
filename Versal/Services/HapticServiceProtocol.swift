@@ -6,6 +6,7 @@ enum HapticFeedbackType {
     case sheetOpen
     case sheetClose
     case press
+    case error
 }
 
 protocol HapticServiceProtocol {
