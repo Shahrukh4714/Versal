@@ -87,6 +87,7 @@ struct PDFViewer: View {
             .padding(.vertical, 4)
             .background(Color.aiGradientStart.opacity(0.1))
             .cornerRadius(8)
+            .accessibilityLabel("AI Chat")
             .onTapGesture { haptics.trigger(.press); viewModel.showAIChat = true }
 
             Spacer()
@@ -131,6 +132,7 @@ struct PDFViewer: View {
         .padding(.vertical, 6)
         .background(Color.inkWash)
         .cornerRadius(8)
+        .accessibilityLabel(label)
     }
 
     private func toolbarTab(icon: String, label: String, isLocked: Bool) -> some View {
@@ -204,6 +206,7 @@ struct PDFViewer: View {
                                         .stroke(viewModel.selectedPages.contains(index) ? Color.inkBlue : Color.clear, lineWidth: 2.5)
                                 )
                                 .onTapGesture {
+                                    haptics.trigger(.press)
                                     if viewModel.selectedPages.contains(index) {
                                         viewModel.selectedPages.remove(index)
                                     } else {

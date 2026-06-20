@@ -4,6 +4,7 @@ struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
     @State private var showFaceIDPrompt = false
     @State private var haptics = HapticService()
+    @State private var toastMessage: String?
 
     var body: some View {
         NavigationStack {
@@ -37,6 +38,14 @@ struct SettingsView: View {
                             )
                         )
                 }
+            }
+            .alert("Coming Soon", isPresented: .init(
+                get: { toastMessage != nil },
+                set: { if !$0 { toastMessage = nil } }
+            )) {
+                Button("OK") { toastMessage = nil }
+            } message: {
+                Text(toastMessage ?? "")
             }
         }
     }
@@ -73,7 +82,7 @@ struct SettingsView: View {
             }
 
             if viewModel.subscriptionTier == .pro {
-                Button("Manage Subscription") { haptics.trigger(.press) }
+                Button("Manage Subscription") { haptics.trigger(.press); toastMessage = "Manage Subscription — coming soon" }
                     .bodyStyle()
                     .foregroundColor(.inkBlue)
             }
@@ -175,11 +184,11 @@ struct SettingsView: View {
                 }
             }
 
-            Button("Support / Contact") { haptics.trigger(.press) }
+            Button("Support / Contact") { haptics.trigger(.press); toastMessage = "Support — coming soon" }
                 .bodyStyle()
                 .foregroundColor(.inkBlue)
 
-            Button("Privacy Policy") { haptics.trigger(.press) }
+            Button("Privacy Policy") { haptics.trigger(.press); toastMessage = "Privacy Policy — coming soon" }
                 .bodyStyle()
                 .foregroundColor(.inkBlue)
         }

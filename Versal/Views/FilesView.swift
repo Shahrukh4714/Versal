@@ -174,7 +174,7 @@ struct FilesView: View {
                 }
             }
 
-            Button(action: { viewModel.isGridView.toggle() }) {
+            Button(action: { haptics.trigger(.press); viewModel.isGridView.toggle() }) {
                 Image(systemName: viewModel.isGridView ? "list.bullet" : "square.grid.2x2")
                     .font(.system(size: IconSize.inline))
                     .foregroundColor(.inkBlue)
@@ -221,6 +221,7 @@ struct FilesView: View {
 
     private func fileGridCell(_ file: FileItem) -> some View {
         Button(action: {
+            haptics.trigger(.press)
             if viewModel.isSelectMode {
                 if viewModel.selectedFiles.contains(file.id) {
                     viewModel.selectedFiles.remove(file.id)
@@ -284,6 +285,7 @@ struct FilesView: View {
         .cardShadow()
         .contentShape(Rectangle())
         .onTapGesture {
+            haptics.trigger(.press)
             if viewModel.isSelectMode {
                 if viewModel.selectedFiles.contains(file.id) {
                     viewModel.selectedFiles.remove(file.id)

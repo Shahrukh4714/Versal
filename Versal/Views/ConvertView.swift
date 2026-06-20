@@ -3,6 +3,7 @@ import SwiftUI
 struct ConvertView: View {
     @StateObject private var viewModel = ConverterViewModel()
     @State private var haptics = HapticService()
+    @State private var toastMessage: String?
 
     var body: some View {
         NavigationStack {
@@ -28,6 +29,14 @@ struct ConvertView: View {
             Button("OK") { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
+        }
+        .alert("Coming Soon", isPresented: .init(
+            get: { toastMessage != nil },
+            set: { if !$0 { toastMessage = nil } }
+        )) {
+            Button("OK") { toastMessage = nil }
+        } message: {
+            Text(toastMessage ?? "")
         }
     }
 
@@ -151,7 +160,7 @@ struct ConvertView: View {
 
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                     ForEach(viewModel.availableCategories, id: \.rawValue) { category in
-                        Button(action: { haptics.trigger(.press) }) {
+                        Button(action: { haptics.trigger(.press); toastMessage = "\(category.rawValue) — coming in a future update" }) {
                             Text(category.rawValue)
                                 .bodyBoldStyle()
                                 .foregroundColor(.inkBlue)
